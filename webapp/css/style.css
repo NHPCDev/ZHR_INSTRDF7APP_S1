@@ -1,0 +1,13 @@
+.statusBoldText {
+    font-weight: bold;
+}
+
+.noHeaderTable .sapMListTblHeader {
+    display: none;
+}
+
+.noHeaderTable .sapMListTblHeaderCell {
+    padding: 0;
+    height: 0;
+    border: 0;
+}

@@ -1,0 +1,23 @@
+{
+  "generationParameters": {
+    "generationDate": "Thu Jul 23 2026 11:08:57 GMT+0000 (Coordinated Universal Time)",
+    "generatorPlatform": "SAP Business Application Studio",
+    "serviceType": "SAP System (ABAP On-Premise)",
+    "metadataFilename": "",
+    "serviceUrl": "http://vhnpddnhci.sap.nhpc.in:44300/sap/opu/odata/sap/ZHR_INSIDER_TRADING_SRV",
+    "appName": "zhr_instrdf7app_s1",
+    "appTitle": "Manage Pre-Approval Disclosure",
+    "appDescription": "Manage Pre-Approval Disclosure",
+    "appNamespace": "com.nhpc",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.120.45",
+    "enableEslint": true,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.29.0",
+    "template": "Basic V2",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}

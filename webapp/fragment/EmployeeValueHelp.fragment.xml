@@ -1,0 +1,15 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <SelectDialog
+        title="{i18n>employeeID}"
+        search=".onValueHelpSearch"
+        liveChange=".onValueHelpSearch"
+        confirm=".onValueHelpClose"
+        cancel=".onValueHelpClose"
+        items="{/ZHR_CDS_IT_EMPLOYEE_F4H}">
+        <StandardListItem
+            title="{Empid}"
+            description="{FullName}" />
+    </SelectDialog>
+</core:FragmentDefinition>

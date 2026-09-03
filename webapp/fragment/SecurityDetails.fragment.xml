@@ -1,0 +1,107 @@
+<c:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:c="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    class="sapUiSizeCompact"
+>
+    <Dialog title="{viewModel>/dialogTitle}">
+        <VBox>
+            <f:SimpleForm
+                editable="true"
+                layout="ColumnLayout"
+                binding="{viewModel>/selectedSecurityDetails}"
+            >
+                <Label text="{i18n>nameOfTheHolder}" />
+                <Input
+                    value="{viewModel>HolderName}"
+                    editable="true"
+                    required="true"
+                    valueState="{viewModel>/valueState/HolderName}"
+                    valueStateText="{viewModel>/valueStateText/HolderName}"
+                    change="onMandatoryChange"
+                />
+                <Label text="{i18n>firstOrJointHolder}" />
+                <ComboBox
+                    selectedKey="{viewModel>HolderType}"
+                    editable="true"
+                    required="true"
+                    valueState="{viewModel>/valueState/HolderType}"
+                    valueStateText="{viewModel>/valueStateText/HolderType}"
+                    change="onComboboxChange"
+                    items="{path: '/ZHR_CDS_IT_HOLDERTYPE_F4H'}"
+                >
+                    <core:Item
+                        key="{StatusCode}"
+                        text="{Statustext}"
+                    />
+                </ComboBox>
+                <Label text="{i18n>numberOfSecurities}" />
+                <Input
+                    value="{viewModel>NoOfSecurities}"
+                    editable="true"
+                    required="true"
+                    valueState="{viewModel>/valueState/NoOfSecurities}"
+                    valueStateText="{viewModel>/valueStateText/NoOfSecurities}"
+                    change="onMandatoryChange"
+                />
+                <Label text="{i18n>bought/sold/subscribed}" />
+                <ComboBox
+                    selectedKey="{viewModel>TransactionType}"
+                    editable="true"
+                    required="true"
+                    valueState="{viewModel>/valueState/TransactionType}"
+                    valueStateText="{viewModel>/valueStateText/TransactionType}"
+                    change="onComboboxChange"
+                    items="{path: '/ZHR_CDS_IT_TRANSACTION_F4H'}"
+                >
+                    <core:Item
+                        key="{StatusCode}"
+                        text="{Statustext}"
+                    />
+                </ComboBox>
+                <Label text="{i18n>dpIdClientId}" />
+                <Input
+                    value="{viewModel>DPClientID}"
+                    editable="true"
+                    required="true"
+                    valueState="{viewModel>/valueState/DpClientId}"
+                    valueStateText="{viewModel>/valueStateText/DpClientId}"
+                    change="onMandatoryChange"
+                />
+                <Label text="{i18n>price}" />
+                <Input
+                    value="{viewModel>Price}"
+                    required="true"
+                    editable="true"
+                    valueState="{viewModel>/valueState/Price}"
+                    valueStateText="{viewModel>/valueStateText/Price}"
+                    change="onMandatoryChange"
+                />
+                <Label text="{i18n>transactionDate}" />
+                <DatePicker
+                    value="{viewModel>TransactionDate}"
+                    valueFormat="yyyyMMdd"
+                    displayFormat="dd.MM.yyyy"
+                    valueState="{viewModel>/valueState/TransactionDate}"
+                    valueStateText="{viewModel>/valueStateText/TransactionDate}"
+                    change="onDateChange"
+                    required="true"
+                />
+            </f:SimpleForm>
+        </VBox>
+        <beginButton>
+            <Button
+                text="Save"
+                press="onSaveSecurityDetails"
+                type="Emphasized"
+            />
+        </beginButton>
+        <endButton>
+            <Button
+                text="Cancel"
+                press="onCancelSecurityDetails"
+            />
+        </endButton>
+    </Dialog>
+</c:FragmentDefinition>

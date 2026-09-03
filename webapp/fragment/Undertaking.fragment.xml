@@ -1,0 +1,50 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    class="sapUiSizeCompact">
+
+    <VBox class="sapUiSmallMargin">
+
+        <FormattedText
+            htmlText="{path:'viewModel>/undertakingIntro',
+            formatter:'.formatter.formatterUndertakingText'}"
+            class="sapUiSmallMarginBottom" />
+
+        <Table
+            items="{viewModel>/undertakingDocs}"
+            showSeparators="None"
+            backgroundDesign="Transparent">
+
+            <columns>
+                <Column  width="auto">
+                    <Text text="{i18n>undertaking}" />
+                </Column> 
+                <Column width="4rem" hAlign="End">
+                    <Text text="{i18n>agree}" />
+                </Column> 
+            </columns>
+
+            <items>
+                <ColumnListItem>
+                    <cells>
+                        <Text
+                            text="{viewModel>text}"
+                            wrapping="true" />
+
+                        <CheckBox
+                            selected="{viewModel>selected}"
+                            editable="false" />
+                    </cells>
+                </ColumnListItem>
+            </items>
+
+        </Table>
+
+        <FormattedText
+            htmlText="{path:'viewModel>/undertakingDeclaration',
+            formatter:'.formatter.formatterUndertakingText'}"
+            class="sapUiSmallMarginTop" />
+
+    </VBox>
+
+</core:FragmentDefinition>

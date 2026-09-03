@@ -1,0 +1,71 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    class="sapUiSizeCompact"
+>
+    <VBox>
+        <f:SimpleForm
+            editable="true"
+            layout="ColumnLayout"
+        >
+            <Label
+                text="{i18n>ref}"
+                class="statusTextBold"
+            />
+
+            <ComboBox
+                items="{viewModel>/applicatinNoSet}"
+                selectedKey="{viewModel>/formDetails/ApplicationNo}"
+                change="onComboboxChange"
+                editable="false"
+            >
+                <core:Item
+                    key="{viewModel>}"
+                    text="{viewModel>}"
+                />
+            </ComboBox>
+
+            <Label
+                text="{i18n>aSection}"
+                class="statusTextBold"
+            />
+
+            <ComboBox
+                selectedKey="{viewModel>/formDetails/TradePerformed}"
+                change="onComboboxChange"
+                editable="false"
+                items="{path: '/ZHR_CDS_IT_TRADEPERFORM_F4H'}"
+            >
+                <core:Item
+                    key="{StatusCode}"
+                    text="{Statustext}"
+                />
+            </ComboBox>
+
+            <Label
+                text="{i18n>bSection}"
+                class="statusTextBold"
+            />
+
+            <Input
+                value="{viewModel>/formDetails/SecurityDescription}"
+                change="onMandatoryChange"
+                editable="false"
+            />
+
+            <Label
+                text="{i18n>dated}"
+                class="statusTextBold"
+            />
+
+            <DatePicker
+                value="{viewModel>/formDetails/DisclosureDate}"
+                valueFormat="yyyyMMdd"
+                displayFormat="dd.MM.yyyy"
+                change="onDateChange"
+                editable="false"
+            />
+        </f:SimpleForm>
+    </VBox>
+</core:FragmentDefinition>

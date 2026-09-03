@@ -1,0 +1,46 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Dialog
+        id="idDecisionDialog"
+        title="{i18n>DialogTitleRemarks}"
+        class="sapUiSizeCompact"
+    >
+        <content>
+            <VBox id="idVbDicision" class="sapUiSmallMargin">               
+                <Text text="{= ${viewModel>/decision} === 'Approve' ? ${i18n>approveText} : ${i18n>returnText}}"></Text>
+                <Label id="idVbDicisionLabel1"
+                    text="{i18n>RemarksLabel}"
+                    required="{= ${viewModel>/decision} !== 'Approve'}"
+                />
+                <TextArea
+                    id="idRemarks"
+                    rows="4"
+                    width="100%"
+                    maxLength="250"
+                    value="{viewModel>/formDetails/Remarks}"
+                    valueState="{viewModel>/valueState/Remarks}"
+                    valueStateText="{viewModel>/valueStateText/Remarks}"
+                    change="onMandatoryChange"
+                />
+            </VBox>
+        </content>
+        <beginButton>
+            <Button
+                id="idBtnSbmtApp"
+                text="{i18n>subBtnText}"
+                type="Emphasized"
+                press="onDecisionSubmit"
+            />
+        </beginButton>
+ 
+        <endButton>
+            <Button
+                id="idBtnCancelApp"
+                text="{i18n>cancelBtnText}"
+                press="onDecisionCancel"
+            />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>
