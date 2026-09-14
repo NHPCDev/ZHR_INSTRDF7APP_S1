@@ -26,6 +26,8 @@
         <Input value="{viewModel>/formDetails/EmployeeDepartment}" editable="false" />
         <Label text="{i18n>positionLabel}" />
         <Input value="{viewModel>/formDetails/PositionText}" editable="false" /> -->
+        <Label text="{i18n>designation}"></Label>
+        <Input value="{viewModel>/formDetails/Designation}" editable="false"></Input>
         <Label text="{i18n>userID}"></Label>
         <Input value="{viewModel>/formDetails/USRID}" editable="false"></Input>
         <Label text="{i18n>mobile}"></Label>
