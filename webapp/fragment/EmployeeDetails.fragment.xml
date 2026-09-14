@@ -10,7 +10,7 @@
         <Input value="{viewModel>/formDetails/EmployeeId}" editable="false" />
         <Label text="{i18n>employeeNameLabel}" />
         <Input value="{viewModel>/formDetails/EmployeeName}" editable="false" />
-        <Label text="{i18n>companyCodeLabel}" />
+        <!-- <Label text="{i18n>companyCodeLabel}" />
         <Input value="{viewModel>/formDetails/CompanyCode}" editable="false" />
         <Label text="{i18n>gradeLabel}" />
         <Input value="{viewModel>/formDetails/EmployeeGrade}" editable="false" />
@@ -25,6 +25,14 @@
         <Label text="{i18n>departmentLabel}" />
         <Input value="{viewModel>/formDetails/EmployeeDepartment}" editable="false" />
         <Label text="{i18n>positionLabel}" />
-        <Input value="{viewModel>/formDetails/PositionText}" editable="false" />
+        <Input value="{viewModel>/formDetails/PositionText}" editable="false" /> -->
+        <Label text="{i18n>userID}"></Label>
+        <Input value="{viewModel>/formDetails/USRID}" editable="false"></Input>
+        <Label text="{i18n>mobile}"></Label>
+        <Input value="{viewModel>/formDetails/MOBILE}" editable="false"></Input>
+        <Label text="{i18n>email}"></Label>
+        <Input value="{viewModel>/formDetails/EMAIL}" editable="false"></Input>
+        <Label text="{i18n>dateOfJoining}"></Label>
+        <Input value="{viewModel>/formDetails/DATE_JOIN}" editable="false"></Input>
     </f:SimpleForm>
 </c:FragmentDefinition>

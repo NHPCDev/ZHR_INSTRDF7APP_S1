@@ -142,6 +142,24 @@
                                     </uxap:ObjectPageSubSection>
                                 </uxap:subSections>
                             </uxap:ObjectPageSection>
+                            <uxap:ObjectPageSection
+                                title="{i18n>historyWithRemarks}"
+                                titleUppercase="false"
+                                visible="true"
+                            >
+                                <uxap:subSections>
+                                    <uxap:ObjectPageSubSection>
+                                        <uxap:blocks>
+                                            <VBox>
+                                                <core:Fragment
+                                                    fragmentName="com.nhpc.zhrinstrdf7apps1.fragment.HistoryRemarks"
+                                                    type="XML"
+                                                />
+                                            </VBox>
+                                        </uxap:blocks>
+                                    </uxap:ObjectPageSubSection>
+                                </uxap:subSections>
+                            </uxap:ObjectPageSection>
                         </uxap:sections>
                     </uxap:ObjectPageLayout>
                 </content>

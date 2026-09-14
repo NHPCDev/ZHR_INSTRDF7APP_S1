@@ -1,0 +1,28 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+>
+    <VBox id="idAprCboxRem">
+        <List id="idAprHistLst" items="{viewModel>/History}">
+            <FeedListItem id="idAprFd"
+                sender="{viewModel>ChangedBy}"
+                senderActive="false"
+                info="{viewModel>Status}"
+                icon="sap-icon://person-placeholder"
+                iconDisplayShape="Square"
+                iconSize="M"
+                iconActive="false"
+                timestamp="{
+                    parts: [
+                        'viewModel>ChangedOn',
+                        'viewModel>Time'
+                    ],
+                    formatter: '.formatter.formatHistoryDateTime'
+                }"
+                text="{viewModel>Remark}"
+            />
+        </List>
+    </VBox>
+</core:FragmentDefinition>
+ 
+ 

@@ -13,7 +13,7 @@ sap.ui.define([
     "sap/ui/table/Column",
     "sap/m/Label",
     "sap/m/Column",
-    "sap/m/Text"
+    "sap/m/Text",
 ], (BaseController, Filter, FilterOperator, Spreadsheet, Fragment, ValueState, formatter, messenger, BusyIndicator, JSONModel, SearchField, UIColumn, Label, MColumn, Text) => {
     "use strict";
 
@@ -226,30 +226,51 @@ sap.ui.define([
                 aFilters: aSearchFilter.length
                     ? [new Filter({
                         filters: aSearchFilter,
-                            and: true
-                     })]
-                : []
+                        and: true
+                    })]
+                    : []
             }
         },
 
-        onDownload: function (oEvent) {
-            var aRows = this.byId("idDashboardTable").getBinding("items"),
-                oSettings, oSheet, sFileName = this.getResourceBundle().getText("title"),
-                aCols = this.createColumnConfig();
-
-            oSettings = {
-                workbook: {
-                    columns: aCols
-                },
-                dataSource: aRows,
-                fileType: 'Excel',
-                fileName: sFileName
-            };
-            oSheet = new Spreadsheet(oSettings);
-            //oSheet = controls.createSpreadsheet(oSettings);
-            oSheet.build().then(function () { }).finally(oSheet.destroy);
+        onDownload: function () {
+            var oModel = this.getModel();
+            let oResourceBundle = this.getResourceBundle();
+            BusyIndicator.show(0);
+            oModel.read("/PreapprovedSet", {
+                filters: [
+                    new sap.ui.model.Filter(
+                        "ApproverFlag",
+                        sap.ui.model.FilterOperator.EQ,
+                        "7"
+                    )
+                ],
+                success: function (oData) {
+                    var aData = oData.results.map(function (oData) {
+                        var oRow = Object.assign({}, oData);
+                        oRow.ConfirmedOn = formatter.formatDate(oRow.ConfirmedOn);
+                        return oRow;
+                    });
+                    var oSettings = {
+                        workbook: {
+                            columns: this.createColumnConfig()
+                        },
+                        dataSource: aData,
+                        fileType: "xlsx",
+                        fileName: this.getResourceBundle().getText("title")
+                    };
+                    var oSheet = new Spreadsheet(oSettings);
+                    oSheet.build()
+                        .finally(function () {
+                            oSheet.destroy();
+                            BusyIndicator.hide();
+                        });
+                }.bind(this),
+                error: function () {
+                    BusyIndicator.hide();
+                    messenger.error(oResourceBundle.getText("failedToDownloadData"));
+                }
+            });
         },
-
         createColumnConfig: function () {
             var aCols = [];
             aCols.push({
@@ -262,17 +283,14 @@ sap.ui.define([
             });
             aCols.push({
                 label: this.getResourceBundle().getText("employeeNameLabel"),
-                property: "EmpName"
+                property: "EmployeeName"
             });
             aCols.push({
                 label: this.getResourceBundle().getText("confirmedOn"),
-                property: "ConfirmedOn",
-                type: "date",
-                inputFormat: "yyyymmdd",
-                format: "dd.MM.yyyy"
+                property: "ConfirmedOn"
             });
             aCols.push({
-                label:this.getResourceBundle().getText("confirmedBy"),
+                label: this.getResourceBundle().getText("confirmedBy"),
                 property: "ConfirmBy"
             });
             aCols.push({
@@ -466,9 +484,9 @@ sap.ui.define([
             });
         },
         onValueHelpChange: function (oEvent) {
-             var sEmpId = oEvent.getParameter("value");
+            var sEmpId = oEvent.getParameter("value");
             var oInput = oEvent.getSource();
-             if (!sEmpId) {
+            if (!sEmpId) {
                 this.getModel("filterModel").setProperty("/EmpId", "");
                 return;
             }
@@ -485,7 +503,7 @@ sap.ui.define([
                         sEmpId
                     )
                 ],
-                success: function (oData) { 
+                success: function (oData) {
                     if (oData.results.length > 0) {
                         this.getModel("viewModel")
                             .setProperty("/filterData/Pernr", oData.results[0].Empid);

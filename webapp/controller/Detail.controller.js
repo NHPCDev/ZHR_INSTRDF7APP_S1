@@ -20,6 +20,7 @@ sap.ui.define([
         _onRoutePatternMatched: async function (oEvent) {
             let oArgs = oEvent.getParameter("arguments");
             let sApplicationNo = oArgs.ApplicationNo;
+            this.sApplicationNo = sApplicationNo;
             let sYear = oArgs.Year;
             let sPernr = oArgs.Pernr;
             let oViewModel = this.getModel("viewModel");
@@ -156,7 +157,7 @@ sap.ui.define([
                 ];
                 oModel.read("/ZFI_GH_USER_F4", {
                     filters: aFilters,
-                    success: function (oResp) {
+                    success:async function (oResp) {
                         if (oResp.results && oResp.results.length > 0) {
                             oViewModel.setProperty("/formDetails/EmployeeId", oResp.results[0].PERNR);
                             oViewModel.setProperty("/formDetails/EmployeeName", oResp.results[0].ENAME);
@@ -168,7 +169,12 @@ sap.ui.define([
                             oViewModel.setProperty("/formDetails/PersonnelSubAreaText", oResp.results[0].PLANT);
                             oViewModel.setProperty("/formDetails/EmployeeDepartment", `${oResp.results[0].DEP_CODE} - ${oResp.results[0].DEP}`);
                             oViewModel.setProperty("/formDetails/PositionText", oResp.results[0].DESIG);
+                            oViewModel.setProperty("/formDetails/USRID", oResp.results[0].USRID);
+                            oViewModel.setProperty("/formDetails/MOBILE", oResp.results[0].MOBILE);
+                            oViewModel.setProperty("/formDetails/EMAIL", oResp.results[0].EMAIL);
+                            oViewModel.setProperty("/formDetails/DATE_JOIN", oResp.results[0].DATE_JOIN);
                         }
+                        await this._getHistoryWithRemarksData(oResp.results[0].PERNR);
                         resolve();
                     }.bind(this),
                     error: function (oError) {
@@ -454,6 +460,28 @@ sap.ui.define([
                 oPayload.RejectionRemarks = oFormDetails.Remarks
             }
             return oPayload;
+        },
+        _getHistoryWithRemarksData: function (Pernr) {
+            var oModel = this.getModel();
+            var oVM = this.getModel("viewModel");
+
+            var aFilters = [
+                new Filter("Pernr", FilterOperator.EQ, Pernr),
+                new Filter("FormNo", FilterOperator.EQ, "FORM7"),
+                new Filter("ApplicationNo", FilterOperator.EQ, this.sApplicationNo)
+            ];
+
+            oModel.read("/RemarkHistorySet", {
+                filters: aFilters,
+                success: function (oData) {
+                    oVM.setProperty("/History", oData.results);
+                    console.log("History Data", oData.results);
+                }.bind(this),
+
+                error: function () {
+                    MessageBox.error("unableToFetchApplicationDetails");
+                }
+            });
         },
 
     });
