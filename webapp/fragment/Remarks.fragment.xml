@@ -5,24 +5,26 @@
     <Dialog
         id="idDecisionDialog"
         title="{i18n>DialogTitleRemarks}"
-        class="sapUiSizeCompact"
+        type="Message" 
+        titleAlignment="Center" 
+		class="sapUiSizeCompact"
     >
         <content>
-            <VBox id="idVbDicision" class="sapUiSmallMargin">               
-                <Text text="{= ${viewModel>/decision} === 'Approve' ? ${i18n>approveText} : ${i18n>returnText}}"></Text>
+            <VBox id="idVbDicision">               
+                <Text text="{= ${viewModel>/decision} === 'Approve' ? ${i18n>approveText} : ${i18n>returnText}}" class="sapUiSmallMarginBottom"></Text>
                 <Label id="idVbDicisionLabel1"
                     text="{i18n>RemarksLabel}"
                     required="{= ${viewModel>/decision} !== 'Approve'}"
                 />
                 <TextArea
                     id="idRemarks"
-                    rows="4"
+                    rows="2"
                     width="100%"
-                    maxLength="250"
+                    maxLength="230"
                     value="{viewModel>/formDetails/Remarks}"
                     valueState="{viewModel>/valueState/Remarks}"
                     valueStateText="{viewModel>/valueStateText/Remarks}"
-                    change="onMandatoryChange"
+                    liveChange="onRemarksChange"
                 />
             </VBox>
         </content>
@@ -32,9 +34,9 @@
                 text="{i18n>subBtnText}"
                 type="Emphasized"
                 press="onDecisionSubmit"
+                enabled="{= ${viewModel>/submitEnabled} === 'true'}"
             />
         </beginButton>
- 
         <endButton>
             <Button
                 id="idBtnCancelApp"

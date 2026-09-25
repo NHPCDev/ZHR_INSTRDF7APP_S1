@@ -14,9 +14,10 @@ sap.ui.define([
     "sap/m/Label",
     "sap/m/Column",
     "sap/m/Text",
-], (BaseController, Filter, FilterOperator, Spreadsheet, Fragment, ValueState, formatter, messenger, BusyIndicator, JSONModel, SearchField, UIColumn, Label, MColumn, Text) => {
+    "sap/ui/export/library"
+], (BaseController, Filter, FilterOperator, Spreadsheet, Fragment, ValueState, formatter, messenger, BusyIndicator, JSONModel, SearchField, UIColumn, Label, MColumn, Text,exportLibrary) => {
     "use strict";
-
+    var EdmType = exportLibrary.EdmType;
     return BaseController.extend("com.nhpc.zhrinstrdf7apps1.controller.Dashboard", {
         formatter: formatter,
         onInit() {
@@ -232,44 +233,22 @@ sap.ui.define([
             }
         },
 
-        onDownload: function () {
-            var oModel = this.getModel();
-            let oResourceBundle = this.getResourceBundle();
-            BusyIndicator.show(0);
-            oModel.read("/PreapprovedSet", {
-                filters: [
-                    new sap.ui.model.Filter(
-                        "ApproverFlag",
-                        sap.ui.model.FilterOperator.EQ,
-                        "7"
-                    )
-                ],
-                success: function (oData) {
-                    var aData = oData.results.map(function (oData) {
-                        var oRow = Object.assign({}, oData);
-                        oRow.ConfirmedOn = formatter.formatDate(oRow.ConfirmedOn);
-                        return oRow;
-                    });
-                    var oSettings = {
-                        workbook: {
-                            columns: this.createColumnConfig()
-                        },
-                        dataSource: aData,
-                        fileType: "xlsx",
-                        fileName: this.getResourceBundle().getText("title")
-                    };
-                    var oSheet = new Spreadsheet(oSettings);
-                    oSheet.build()
-                        .finally(function () {
-                            oSheet.destroy();
-                            BusyIndicator.hide();
-                        });
-                }.bind(this),
-                error: function () {
-                    BusyIndicator.hide();
-                    messenger.error(oResourceBundle.getText("failedToDownloadData"));
-                }
-            });
+        onDownload: function (oEvent) {
+            var aRows = this.byId("idDashboardTable").getBinding("items"),
+                oSettings, oSheet, sFileName = this.getResourceBundle().getText("title"),
+                aCols = this.createColumnConfig();
+
+            oSettings = {
+                workbook: {
+                    columns: aCols
+                },
+                dataSource: aRows,
+                fileType: 'Excel',
+                fileName: sFileName
+            };
+            oSheet = new Spreadsheet(oSettings);
+            //oSheet = controls.createSpreadsheet(oSettings);
+            oSheet.build().then(function () { }).finally(oSheet.destroy);
         },
         createColumnConfig: function () {
             var aCols = [];
@@ -287,11 +266,10 @@ sap.ui.define([
             });
             aCols.push({
                 label: this.getResourceBundle().getText("confirmedOn"),
-                property: "ConfirmedOn"
-            });
-            aCols.push({
-                label: this.getResourceBundle().getText("confirmedBy"),
-                property: "ConfirmBy"
+                property: "ConfirmedOn",
+                type: EdmType.Date,
+                inputFormat: "yyyymmdd",
+                format: "dd.mm.yyyy"
             });
             aCols.push({
                 label: this.getResourceBundle().getText("status"),

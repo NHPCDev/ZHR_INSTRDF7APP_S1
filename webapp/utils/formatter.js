@@ -110,6 +110,49 @@ sap.ui.define(["sap/ui/core/IconPool",
         },
         formatNumbers: function(sNumber){
             return Number(sNumber)?.toString();
-        }
+        },
+        formatHistoryDateTime: function (oDate, oTime) {
+
+            if (!oDate || !oTime) {
+                return "";
+            }
+
+            var year = oDate.substring(0, 4);
+            var month = oDate.substring(4, 6);
+            var day = oDate.substring(6, 8);
+
+            var sDate = day + "." + month + "." + year;
+
+            var iHours = 0,
+                iMinutes = 0,
+                iSeconds = 0;
+
+            if (typeof oTime === "string") {
+
+                if (/^\d{6}$/.test(oTime)) {
+                    iHours = parseInt(oTime.substring(0, 2), 10);
+                    iMinutes = parseInt(oTime.substring(2, 4), 10);
+                    iSeconds = parseInt(oTime.substring(4, 6), 10);
+                }
+
+                else {
+                    var match = oTime.match(/PT(\d+)H(\d+)M(\d+)S/);
+
+                    if (match) {
+                        iHours = parseInt(match[1], 10);
+                        iMinutes = parseInt(match[2], 10);
+                        iSeconds = parseInt(match[3], 10);
+                    }
+                }
+            }
+
+            var sTime =
+                String(iHours).padStart(2, "0") + ":" +
+                String(iMinutes).padStart(2, "0") + ":" +
+                String(iSeconds).padStart(2, "0");
+
+            return sDate + " " + sTime;
+        },
+
     }
 });

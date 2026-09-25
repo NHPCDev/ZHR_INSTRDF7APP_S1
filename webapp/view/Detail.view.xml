@@ -110,6 +110,7 @@
                             <uxap:ObjectPageSection
                                 title="{i18n>securityDetails}"
                                 titleUppercase="false"
+                                visible="{= ${viewModel>/formDetails/TradePerformed} ==='Yes' }"
                             >
                                 <uxap:subSections>
                                     <uxap:ObjectPageSubSection>

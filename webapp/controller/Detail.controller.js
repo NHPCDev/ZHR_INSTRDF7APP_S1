@@ -48,7 +48,11 @@ sap.ui.define([
         setFormDetails: async function (sApplicationNo) {
             let oModel = this.getModel();
             let oViewModel = this.getModel("viewModel");
-            let aFilters = new Filter("ApplicationNo", FilterOperator.EQ, sApplicationNo);
+            let aFilters = new Filter(
+                "ApplicationNo",
+                FilterOperator.EQ,
+                sApplicationNo
+            );
             await new Promise((resolve, reject) => {
                 oModel.read("/PreapprovedSet", {
                     filters: [aFilters],
@@ -58,68 +62,102 @@ sap.ui.define([
                     success: function (oData) {
                         if (oData.results.length === 0) {
                             messenger.error("No Data Found");
+                            resolve();
                             return;
                         }
+                        let oResult = oData.results[0];
                         oViewModel.setProperty(
                             "/applicatinNoSet",
                             oData.results.map(i => i.ApplicationNo)
                         );
-                        oViewModel.setProperty("/formDetails", {
-                            ...oViewModel.getProperty("/formDetails"),
-                            ...oData.results[0]
-                        });
-                        oViewModel.setProperty("/formDetails/Designation", oData.results[0].Designation);
-                        oViewModel.setProperty("/tableData", oData.results[0].PREAPPROVED_TO_SECURITY.results)
-                        let sText = oData.results[0].UndertakingText;
-
-                        let aLines = sText.split("\n");
-                        let aDocs = [];
-                        let aIntro = [];
-                        let aDeclaration = [];
-
-
+                        oViewModel.setProperty(
+                            "/formDetails",
+                            {
+                                ...oViewModel.getProperty("/formDetails"),
+                                ...oResult
+                            }
+                        );
+                        oViewModel.setProperty(
+                            "/formDetails/Designation",
+                            oResult.Designation
+                        );
                         let aFlags = [
                             "ContractNoteFlg",
                             "PaymentProofFlg",
                             "BankStatementFlg",
                             "DeliverySlipFlg"
                         ];
-
+                        let aBackendFlags = [
+                            "CheckBox1",
+                            "CheckBox2",
+                            "CheckBox3",
+                            "CheckBox4"
+                        ];
+                        aBackendFlags.forEach(function (sBackendFlag, iIndex) {
+                            let vValue = oResult[sBackendFlag];
+                            oViewModel.setProperty(
+                                "/formDetails/" + aFlags[iIndex],
+                                vValue === true ||
+                                vValue === "X" ||
+                                vValue === "true"
+                            );
+                        });
+                        oViewModel.setProperty(
+                            "/tableData",
+                            oResult.PREAPPROVED_TO_SECURITY.results
+                        );
+                        let sText = oResult.UndertakingText;
+                        let aLines = sText.split("\n");
+                        let aDocs = [];
+                        let aIntro = [];
+                        let aDeclaration = [];
                         let iDocIndex = 0;
                         let bDocSection = false;
                         let bDeclarationSection = false;
-
                         aLines.forEach(function (line) {
-
                             if (/^\d+\)/.test(line.trim())) {
-                                bDocSection = true;
-
                                 aDocs.push({
                                     text: line.replace(/^\d+\)\s*/, ""),
-                                    selected: true
+                                    flagPath: "/formDetails/" + aFlags[iDocIndex],
+                                    selected: oViewModel.getProperty(
+                                        "/formDetails/" + aFlags[iDocIndex]
+                                    )
                                 });
-
                                 iDocIndex++;
                                 return;
                             }
-
-                            if (bDocSection) {
-                                bDeclarationSection = true;
-                            }
-
                             if (!bDocSection) {
                                 aIntro.push(line);
-                            } else if (bDeclarationSection) {
+                            } else {
                                 aDeclaration.push(line);
                             }
                         });
-
-                        oViewModel.setProperty("/undertakingIntro", aIntro.join("\n"));
-                        oViewModel.setProperty("/undertakingDocs", aDocs);
-                        oViewModel.setProperty("/undertakingDeclaration", aDeclaration.join("\n"));                        
+                        oViewModel.setProperty(
+                            "/undertakingIntro",
+                            aIntro.join("\n")
+                        );
+                        oViewModel.setProperty(
+                            "/undertakingDocs",
+                            aDocs
+                        );
+                        oViewModel.setProperty(
+                            "/undertakingDeclaration",
+                            aDeclaration.join("\n")
+                        );
                         resolve();
                     },
                     error: function (oError) {
+                        messenger.error(
+                            JSON.parse(oError.responseText).error.message.value,
+                            function () {
+                                this.getRouter().navTo(
+                                    "RouteDashboard",
+                                    {},
+                                    {},
+                                    true
+                                );
+                            }.bind(this)
+                        );
                         reject(oError);
                     }
                 });
@@ -158,7 +196,7 @@ sap.ui.define([
                 ];
                 oModel.read("/ZFI_GH_USER_F4", {
                     filters: aFilters,
-                    success:async function (oResp) {
+                    success: async function (oResp) {
                         if (oResp.results && oResp.results.length > 0) {
                             oViewModel.setProperty("/formDetails/EmployeeId", oResp.results[0].PERNR);
                             oViewModel.setProperty("/formDetails/EmployeeName", oResp.results[0].ENAME);
@@ -168,12 +206,12 @@ sap.ui.define([
                             oViewModel.setProperty("/formDetails/EmployeeSubgrpText", oResp.results[0].GRADE);
                             oViewModel.setProperty("/formDetails/PersonnelSubArea", oResp.results[0].WERKS);
                             oViewModel.setProperty("/formDetails/PersonnelSubAreaText", oResp.results[0].PLANT);
-                            oViewModel.setProperty("/formDetails/EmployeeDepartment", `${oResp.results[0].DEP_CODE} - ${oResp.results[0].DEP}`);                            
+                            oViewModel.setProperty("/formDetails/EmployeeDepartment", `${oResp.results[0].DEP_CODE} - ${oResp.results[0].DEP}`);
                             oViewModel.setProperty("/formDetails/USRID", oResp.results[0].USRID);
                             oViewModel.setProperty("/formDetails/MOBILE", oResp.results[0].MOBILE);
                             oViewModel.setProperty("/formDetails/EMAIL", oResp.results[0].EMAIL);
                             oViewModel.setProperty("/formDetails/DATE_JOIN", oResp.results[0].DATE_JOIN);
-                            if(sPernr === "New"){
+                            if (sPernr === "New") {
                                 oViewModel.setProperty("/formDetails/Designation", oResp.results[0].DESIG);
                             }
                         }
@@ -349,101 +387,54 @@ sap.ui.define([
                 oDialog.close();
             });
         },
-
-        onDecisionSubmitApprove: function (oEvent) {
-            var oResourceBundle = this.getResourceBundle(),
-                sTitle = oResourceBundle.getText("CONFIRM_TITLE"),
-                sText = oResourceBundle.getText("CONFIRM_TEXT_APPROVE_REQUEST"),
-                bProceed = true;
-            var oModel = this.getModel();
-            if (bProceed) {
-                messenger.confirm(sTitle, sText, "Confirm", null, function () {
-                    BusyIndicator.show(0);
-                    this.sActionFlag = "Approved";
-                    let oPayload = this.createRequestPayload();
-                    oModel.create("/PreapprovedSet", oPayload, {
-                        success: function (oResp) {
-                            BusyIndicator.hide();
-                            messenger.success(oResourceBundle.getText("FinalApproveMsg", oResp.ApplicationNo), () => {
-                                this.getRouter().navTo("RouteDashboard", {}, {}, true);
-                            });
-                        }.bind(this),
-                        error: function (oError) {
-                            BusyIndicator.hide();
-                            messenger.error(JSON.parse(oError.responseText).error.message.value);
-                        }.bind(this)
-                    });
-                }.bind(this));
-            }
-        },
-        onDecisionSubmitReturn: function (oEvent) {
-            var oResourceBundle = this.getResourceBundle(),
-                sTitle = oResourceBundle.getText("CONFIRM_TITLE"),
-                sText = oResourceBundle.getText("CONFIRM_TEXT_RETURN_REQUEST");
-            var oModel = this.getModel();
-            let oViewModel = this.getModel("viewModel");
-            let isMandatoryFilled = oViewModel.getProperty("/formDetails/Remarks");
-            if (!isMandatoryFilled || isMandatoryFilled?.trim() === "") {
-                oViewModel.setProperty("/valueState/Remarks", "Error");
-                oViewModel.setProperty("/valueStateText/Remarks", oResourceBundle.getText("remarkErrorMsg"));
-                return;
-            } else {
-                oViewModel.setProperty("/valueState/Remarks", "None");
-                oViewModel.setProperty("/valueStateText/Remarks", oResourceBundle.getText("remarkErrorMsg"));
-            }
-            messenger.confirm(sTitle, sText, "Confirm", null, function () {
-                BusyIndicator.show(0);
-                this.sActionFlag = "Returned";
-                let oPayload = this.createRequestPayload();
-                oModel.create("/PreapprovedSet", oPayload, {
-                    success: function (oResp) {
-                        BusyIndicator.hide();
-                        messenger.success(oResourceBundle.getText("FinalReturnMsg", oResp.ApplicationNo), () => {
-                            this.getRouter().navTo("RouteDashboard", {}, {}, true);
-                        });
-                    }.bind(this),
-                    error: function (oError) {
-                        BusyIndicator.hide();
-                        messenger.error(JSON.parse(oError.responseText).error.message.value);
-                    }.bind(this)
-                });
-            }.bind(this));
-
-        },
         onDecisionSubmit: function (oEvent) {
             const sDecision = this.getModel("viewModel").getProperty("/decision");
-            const fnHandler = sDecision === "Approve"
-                ? this.onDecisionSubmitApprove
-                : this.onDecisionSubmitReturn;
-
-            fnHandler.call(this, oEvent);
+            let oModel = this.getModel();
+            BusyIndicator.show(0);
+            let oResourceBundle = this.getResourceBundle();
+            this.sActionFlag = sDecision === "Approve" ? "Approved" : "Returned";
+            const sMessageKey = sDecision === "Approve" ? "FinalApproveMsg" : "FinalReturnMsg";
+            let oPayload = this.createRequestPayload();
+            oModel.create("/PreapprovedSet", oPayload, {
+                success: function (oResp) {
+                    BusyIndicator.hide();
+                    this._oRemarksDialog.close();
+                    messenger.success(oResourceBundle.getText(sMessageKey, oResp.ApplicationNo), () => {
+                        this.getRouter().navTo("RouteDashboard", {}, {}, true);
+                    });
+                }.bind(this),
+                error: function (oError) {
+                    BusyIndicator.hide();
+                    messenger.error(JSON.parse(oError.responseText).error.message.value);
+                }.bind(this)
+            });
         },
         handleReturnBtnPress: async function () {
-            this.getModel("viewModel").setProperty("/decision","Return");
+            this.getModel("viewModel").setProperty("/decision", "Return");
+            let oViewModel = this.getModel("viewModel");
+            oViewModel.setProperty("/submitEnabled", "false");
             if (!this._oRemarksDialog) {
                 this._oRemarksDialog = await sap.ui.core.Fragment.load({
                     id: this.getView().getId(),
                     name: "com.nhpc.zhrinstrdf7apps1.fragment.Remarks",
                     controller: this
                 });
-
                 this.getView().addDependent(this._oRemarksDialog);
             }
-
             this._oRemarksDialog.open();
         },
         handleApproveBtnPress: async function () {
-            this.getModel("viewModel").setProperty("/decision","Approve");
+            this.getModel("viewModel").setProperty("/decision", "Approve");
+            let oViewModel = this.getModel("viewModel");
+            oViewModel.setProperty("/submitEnabled", "true");
             if (!this._oRemarksDialog) {
                 this._oRemarksDialog = await sap.ui.core.Fragment.load({
                     id: this.getView().getId(),
                     name: "com.nhpc.zhrinstrdf7apps1.fragment.Remarks",
                     controller: this
                 });
-
                 this.getView().addDependent(this._oRemarksDialog);
             }
-
             this._oRemarksDialog.open();
         },
         onDecisionCancel: function () {
@@ -486,6 +477,18 @@ sap.ui.define([
                 }
             });
         },
+        onRemarksChange: function (oEvent) {
+            let oControl = oEvent.getSource();
+            let sValue = oControl.getValue();
+            let oViewModel = this.getModel("viewModel");
+            if (!sValue) {
+                oViewModel.setProperty("/submitEnabled", "false");
+            } else {
+                oControl.setValueState("None");
+                oControl.setValueStateText("");
+                oViewModel.setProperty("/submitEnabled", "true");
+            }
+        }
 
     });
 });

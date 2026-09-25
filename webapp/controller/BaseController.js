@@ -576,6 +576,75 @@ sap.ui.define([
                     oControl.setValueState("None");
                     oControl.setValueStateText("");
                 }
-            }
+            },
+            //for notification
+            createNotificationPayload: function (sNotificationId, sRecipientUserId, sRequestNumber, sRequesterName) {
+                return {
+                    recipients: sRecipientUserId,
+                    notificationId: sNotificationId, // UUID generated in UI5
+                    businessProcessId: "ZPreAppDis",
+                    businessProcessVersion: "1.0",
+
+                    // business parameters
+                    businessParameter1: sRequestNumber,    // Request Number
+                    businessParameter2: sRequesterName, // Employee/Requester Name
+
+                    // navigation context
+                    semanticObject: "PreAppDis",
+                    semanticAction: "approve"
+                };
+            },
+            dismissNotification: function (sNotificationId, oNotifyPayload) {
+                var payload = {
+                    notificationId: sNotificationId
+                }
+                var oResourceBundle = this.getResourceBundle();
+                var sUrl = this.getBaseURL() + "/notify_api/customNotification/removeNotificationItem";
+                BusyIndicator.show();
+                jQuery.ajax({
+                    url: sUrl,
+                    type: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify(payload),
+                    success: function (oResp) {
+                        BusyIndicator.hide();
+                        if (oNotifyPayload.recipients.length !== 0) {
+                            this.sendNotification(oNotifyPayload);
+                        }
+                    }.bind(this),
+                    error: function (error) {
+                        BusyIndicator.hide();
+                    }.bind(this)
+                });
+            },
+            sendNotification: function (payload) {
+                var oResourceBundle = this.getResourceBundle();
+                var sUrl = this.getBaseURL() + "/notify_api/customNotification/sendNotificationItem";
+                BusyIndicator.show();
+                jQuery.ajax({
+                    url: sUrl,
+                    type: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify(payload),
+                    success: function (oResp) {
+                        BusyIndicator.hide();
+                        console.log(oResp);
+                    }.bind(this),
+                    error: function (error) {
+                        BusyIndicator.hide();
+                        console.log(error);
+                    }.bind(this)
+                });
+            },
+            getBaseURL: function () {
+                var appId = this.getOwnerComponent().getManifestEntry("/sap.app/id");
+                var appPath = appId.replaceAll(".", "/");
+                var appModulePath = jQuery.sap.getModulePath(appPath);
+                return appModulePath;
+            },
         });
     });

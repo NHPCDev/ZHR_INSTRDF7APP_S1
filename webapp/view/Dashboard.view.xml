@@ -132,11 +132,6 @@
                         <Column>
                             <Text text="{i18n>confirmedOn}" />
                         </Column>
-
-                        <Column>
-                            <Text text="{i18n>confirmedBy}" />
-                        </Column>
-
                         <Column>
                             <Text text="{i18n>status}" />
                         </Column>
@@ -161,7 +156,6 @@
                                         }
                                 }"
                                 />
-                                <Text text="{ConfirmBy}"></Text>
                                 <ObjectStatus
                                     text="{path:'Status',formatter:'.formatter.formatTitleCase'}"
                                     class="sapMObjectStatusMedium statusBoldText"
