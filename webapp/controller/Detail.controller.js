@@ -116,6 +116,9 @@ sap.ui.define([
                         let bDeclarationSection = false;
                         aLines.forEach(function (line) {
                             if (/^\d+\)/.test(line.trim())) {
+                                //Start of Change: 06.11.2026: Balamurugan :Label Change for Total Value and Undertaking bug fix
+                                bDocSection = true;
+                                //End of Change: 06.11.2026: Balamurugan :Label Change for Total Value and Undertaking bug fix
                                 aDocs.push({
                                     text: line.replace(/^\d+\)\s*/, ""),
                                     flagPath: "/formDetails/" + aFlags[iDocIndex],
