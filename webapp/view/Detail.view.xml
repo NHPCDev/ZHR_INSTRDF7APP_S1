@@ -38,7 +38,7 @@
                                             />
                                             <ObjectStatus
                                                 title="{i18n>status}"
-                                                text="{path:'viewModel>/formDetails/Status',formatter:'.formatter.formatTitleCase'}"
+                                                text="{path:'viewModel>/formDetails/StatusText',formatter:'.formatter.formatTitleCase'}"
                                                 class="sapMObjectStatusMedium statusBoldText"
                                                 state="{path:'viewModel>/formDetails/Status',formatter:'.formatter.formatStatusState'}"
                                             />
@@ -63,7 +63,7 @@
                                             />
                                             <ObjectStatus
                                                 title="{i18n>status}"
-                                                text="{path:'viewModel>/formDetails/Status',formatter:'.formatter.formatTitleCase'}"
+                                                text="{path:'viewModel>/formDetails/StatusText',formatter:'.formatter.formatTitleCase'}"
                                                 class="sapMObjectStatusMedium statusBoldText"
                                                 state="{path:'viewModel>/formDetails/Status',formatter:'.formatter.formatStatusState'}"
                                             />
@@ -172,14 +172,14 @@
                             type="Accept"
                             press="handleApproveBtnPress"
                             icon="sap-icon://accept"
-                            visible="{= ${viewModel>/formDetails/Status} !== 'Approved' &amp;&amp; ${viewModel>/formDetails/Status} !== 'Returned'}"
+                            visible="{= ${viewModel>/formDetails/Status} !== '03' &amp;&amp; ${viewModel>/formDetails/Status} !== '04'}"
                         />
                         <Button
                             text="{i18n>returnBtnText}"
                             type="Critical"
                             press="handleReturnBtnPress"
                             icon="sap-icon://undo"
-                            visible="{= ${viewModel>/formDetails/Status} !== 'Approved' &amp;&amp; ${viewModel>/formDetails/Status} !== 'Returned'}"
+                            visible="{= ${viewModel>/formDetails/Status} !== '03' &amp;&amp; ${viewModel>/formDetails/Status} !== '04'}"
                         />
                     </OverflowToolbar>
                 </footer>

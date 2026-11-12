@@ -273,7 +273,7 @@ sap.ui.define([
             });
             aCols.push({
                 label: this.getResourceBundle().getText("status"),
-                property: "Status"
+                property: "StatusText"
             });
             return aCols;
         },

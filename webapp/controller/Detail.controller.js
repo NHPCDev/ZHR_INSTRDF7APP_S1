@@ -28,6 +28,7 @@ sap.ui.define([
             try {
                 if (sApplicationNo === "New") {
                     oViewModel.setProperty("/formDetails/Status", "New");
+                    oViewModel.setProperty("/formDetails/StatusText", "New");
                     this.byId("objPageHeader").setText(this.getResourceBundle().getText("createDialogTitle", this.getModel("viewModel").getProperty("/selectedYear")));
                     this.byId("objPageHeader1").setText(this.getResourceBundle().getText("createDialogTitle", this.getModel("viewModel").getProperty("/selectedYear")));
                 } else {
@@ -395,7 +396,7 @@ sap.ui.define([
             let oModel = this.getModel();
             BusyIndicator.show(0);
             let oResourceBundle = this.getResourceBundle();
-            this.sActionFlag = sDecision === "Approve" ? "Approved" : "Returned";
+            this.sActionFlag = sDecision === "Approve" ? "03" : "04";
             const sMessageKey = sDecision === "Approve" ? "FinalApproveMsg" : "FinalReturnMsg";
             let oPayload = this.createRequestPayload();
             oModel.create("/PreapprovedSet", oPayload, {
@@ -451,7 +452,11 @@ sap.ui.define([
             var oPayload = {
                 Status: this.sActionFlag,
                 ApplicationNo: oFormDetails.ApplicationNo,
-                Pernr: oFormDetails.EmployeeId
+                Pernr: oFormDetails.EmployeeId,
+                CheckBox1: aDocs[0] ? (aDocs[0].selected ? "X" : "") : "",
+                CheckBox2: aDocs[1] ? (aDocs[1].selected ? "X" : "") : "",
+                CheckBox3: aDocs[2] ? (aDocs[2].selected ? "X" : "") : "",
+                CheckBox4: aDocs[3] ? (aDocs[3].selected ? "X" : "") : ""
             };
             if (oFormDetails.Remarks) {
                 oPayload.RejectionRemarks = oFormDetails.Remarks

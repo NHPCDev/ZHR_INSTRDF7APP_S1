@@ -12,18 +12,13 @@ sap.ui.define(["sap/ui/core/IconPool",
         },
         formatStatusState: function (status) {
             if (status) {
-                status = status.toLowerCase().replace(/\b\w/g, function (c) {
-                    return c.toUpperCase();
-                });
-            }
-            if (status) {
-                if (status === "02" || status === "Submitted" || status === "Approved") {
+                if (status === "03") {
                     return "Success";
-                } else if (status === "New" || status === "Confirmed") {
+                } else if (status === "02" || status === "New") {
                     return "Information";
-                } else if (status === "01" || status === "Pending") {
+                } else if (status === "01") {
                     return "Warning";
-                } else if (status === "Returned") {
+                } else if (status === "04") {
                     return "Error"
                 } else {
                     return "Warning"

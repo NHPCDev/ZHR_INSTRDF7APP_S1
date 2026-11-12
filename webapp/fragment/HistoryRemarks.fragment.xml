@@ -7,7 +7,7 @@
             <FeedListItem id="idAprFd"
                 sender="{viewModel>ChangedBy}"
                 senderActive="false"
-                info="{viewModel>Status}"
+                info="{viewModel>StatusText}"
                 icon="sap-icon://person-placeholder"
                 iconDisplayShape="Square"
                 iconSize="M"
